@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import gaussian_filter
 from torchsummary import summary
@@ -188,12 +188,14 @@ def test(model, device, test_loader):
             test_loss += F.nll_loss(output, target, reduction='sum').item()  # sum up batch loss
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()
+            """
             for i in range(len(data)):
               if pred[i] != target[i]:
                 img = data[i].numpy().transpose((1, 2, 0))
                 plt.imshow(img)
                 plt.title(f"Predicted: {pred[i]}, Actual: {target[i]}")
                 plt.show()
+            """
 
     test_loss /= len(test_loader.dataset)
     

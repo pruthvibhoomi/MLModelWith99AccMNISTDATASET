@@ -6,8 +6,9 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.ndimage import gaussian_filter # type: ignore
-from torchsummary import summary # type: ignore
+from scipy.ndimage import gaussian_filter
+from torchsummary import summary
+from tqdm import tqdm
 
 class Net(nn.Module):
     def __init__(self):
@@ -117,8 +118,6 @@ test_loader = torch.utils.data.DataLoader(
                     ])),
     batch_size=batch_size, shuffle=True, **kwargs)
 
-
-from tqdm import tqdm
 def l1_regularization(model, lambda1):
     l1_reg = 0.
     for param in model.parameters():
@@ -197,12 +196,16 @@ def test(model, device, test_loader):
                 plt.show()
 
     test_loss /= len(test_loader.dataset)
-
+    
+    total_params = sum(p.numel() for p in model.parameters())
+    accuracy =  test_loss / len(test_loader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.4f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
-    print('Total number of parameters in the model is {}'.format(sum(p.numel() for p in model.parameters())))
-
+    
+    assert total_params < 20000, f'Total parameters: {total_params:.2f}% is not less than 25000'
+    assert accuracy > 0.991, f'Accuracy: {accuracy:.2f}% is not greater than 95%' 
+    
 # Create an SGD optimizer with exponential decay
 def adjust_learning_rate(optimizer, epoch, initial_lr):
     lr = initial_lr * 0.1 ** (epoch // 2)

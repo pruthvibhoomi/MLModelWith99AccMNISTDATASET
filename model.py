@@ -103,7 +103,7 @@ train_loader = torch.utils.data.DataLoader(
                     transform=transforms.Compose([
                          # transforms.ToPILImage(),
                     # transforms.RandomRotation(3),
-                    transforms.RandomAffine(degrees=6, translate=(0.1,0.1), scale=(0.9, 1.1), shear=(-10,10)),
+                    transforms.RandomAffine(degrees=10, translate=(0.1,0.1), scale=(0.9, 1.1), shear=(-15,15)),
                          transforms.ColorJitter(brightness=0.5, contrast=0.5),
                         transforms.Lambda(lambda x: elastic_transform(x, alpha=5, sigma=5)),
 

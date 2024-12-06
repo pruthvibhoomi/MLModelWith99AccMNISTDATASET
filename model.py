@@ -103,7 +103,7 @@ train_loader = torch.utils.data.DataLoader(
                     transform=transforms.Compose([
                          # transforms.ToPILImage(),
                     # transforms.RandomRotation(3),
-                    transforms.RandomAffine(degrees=10, translate=(0.1,0.1), scale=(0.9, 1.1), shear=(-15,15)),
+                    transforms.RandomAffine(degrees=6, translate=(0.1,0.1), scale=(0.9, 1.1), shear=(-10,10)),
                          transforms.ColorJitter(brightness=0.5, contrast=0.5),
                         transforms.Lambda(lambda x: elastic_transform(x, alpha=5, sigma=5)),
 
@@ -200,13 +200,13 @@ def test(model, device, test_loader):
     test_loss /= len(test_loader.dataset)
     
     total_params = sum(p.numel() for p in model.parameters())
-    accuracy =  test_loss / len(test_loader.dataset)
+    accuracy =  100. * correct / len(test_loader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.4f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
     
-    assert total_params < 20000, f'Total parameters: {total_params:.2f}% is not less than 25000'
-    assert accuracy > 0.991, f'Accuracy: {accuracy:.2f}% is not greater than 95%' 
+    assert total_params < 20000, f'Total parameters: {total_params:.2f}% is not less than 20000'
+    assert accuracy > 99.1, f'Accuracy: {accuracy:.2f}% is not greater than 99.1%' 
     
 # Create an SGD optimizer with exponential decay
 def adjust_learning_rate(optimizer, epoch, initial_lr):

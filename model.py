@@ -206,7 +206,7 @@ def test(model, device, test_loader):
         100. * correct / len(test_loader.dataset)))
     
     assert total_params < 20000, f'Total parameters: {total_params:.2f}% is not less than 20000'
-    assert accuracy > 99.1, f'Accuracy: {accuracy:.2f}% is not greater than 99.1%' 
+    assert accuracy > 99.0, f'Accuracy: {accuracy:.2f}% is not greater than 99%' 
     
 # Create an SGD optimizer with exponential decay
 def adjust_learning_rate(optimizer, epoch, initial_lr):

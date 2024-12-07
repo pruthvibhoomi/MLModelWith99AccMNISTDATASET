@@ -13,6 +13,8 @@ from tqdm import tqdm
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
+        self.total_params = 0
+        self.accur = 0
         self.conv1 = nn.Sequential(
             nn.Conv2d(1, 16, 3, 1, padding=1),
             nn.ReLU(),
@@ -105,7 +107,7 @@ train_loader = torch.utils.data.DataLoader(
                     # transforms.RandomRotation(3),
                     transforms.RandomAffine(degrees=10, translate=(0.1,0.1), scale=(0.9, 1.1), shear=(-15,15)),
                          transforms.ColorJitter(brightness=0.5, contrast=0.5),
-                        transforms.Lambda(lambda x: elastic_transform(x, alpha=5, sigma=5)),
+                        transforms.Lambda(lambda x: elastic_transform(x, alpha=7, sigma=7)),
 
                         transforms.ToTensor(),
                         transforms.Normalize((0.1307,), (0.3081,))
@@ -159,8 +161,6 @@ def z_score_outliers(sample, threshold=3):
     outliers = z_scores > threshold
     return outliers.bool()
 
-total_params = 0
-accuracy = 0
 def test(model, device, test_loader):
     model.eval()
     test_loss = 0
@@ -201,8 +201,8 @@ def test(model, device, test_loader):
 
     test_loss /= len(test_loader.dataset)
     
-    total_params = sum(p.numel() for p in model.parameters())
-    accuracy =  100. * correct / len(test_loader.dataset)
+    self.total_params = sum(p.numel() for p in model.parameters())
+    self.accuracy =  100. * correct / len(test_loader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.4f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))

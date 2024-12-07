@@ -222,5 +222,4 @@ num_epochs = 20
 for epoch in range(num_epochs):
     optimizer = adjust_learning_rate(optimizer, epoch, initial_lr=0.1)
     train(model, device, train_loader, optimizer, epoch)
-
-test(model, device, test_loader)
+    test(model, device, test_loader)

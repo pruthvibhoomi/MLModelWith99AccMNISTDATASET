@@ -150,7 +150,7 @@ def train(model, device, train_loader, optimizer, epoch):
         #loss = criterion(output, target)
         loss.backward()
         optimizer.step()
-        pbar.set_description(desc= f'loss={loss.item()} batch_id={batch_idx}')
+        #pbar.set_description(desc= f'loss={loss.item()} batch_id={batch_idx}')
 
 def z_score_outliers(sample, threshold=3):
     mean = torch.mean(sample, dim=0)

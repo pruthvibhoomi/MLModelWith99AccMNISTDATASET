@@ -13,8 +13,6 @@ from tqdm import tqdm
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.total_params = 0
-        self.accur = 0
         self.conv1 = nn.Sequential(
             nn.Conv2d(1, 16, 3, 1, padding=1),
             nn.ReLU(),
@@ -201,11 +199,13 @@ def test(model, device, test_loader):
 
     test_loss /= len(test_loader.dataset)
     
-    self.total_params = sum(p.numel() for p in model.parameters())
-    self.accuracy =  100. * correct / len(test_loader.dataset)
+    
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.4f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
+    total_params = sum(p.numel() for p in model.parameters())
+    accuracy =  100. * correct / len(test_loader.dataset)
+    return total_params,accuracy
     
     
 # Create an SGD optimizer with exponential decay
@@ -219,10 +219,12 @@ model = Net().to(device)
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
 num_epochs = 20
+total_params = 0
+accuracy = 0
 for epoch in range(num_epochs):
     optimizer = adjust_learning_rate(optimizer, epoch, initial_lr=0.1)
     train(model, device, train_loader, optimizer, epoch)
-    test(model, device, test_loader)
+    total_params, accuracy = test(model, device, test_loader)
 
 assert total_params < 20000, f'Total parameters: {total_params:.2f}% is not less than 20000'
 assert accuracy > 99.0, f'Accuracy: {accuracy:.2f}% is not greater than 99%' 
